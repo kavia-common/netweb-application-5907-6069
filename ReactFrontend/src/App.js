@@ -1,47 +1,77 @@
-import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import Header from "./components/Header";
+import DeviceList from "./components/DeviceList";
+import DeviceForm from "./components/DeviceForm";
 
 // PUBLIC_INTERFACE
 function App() {
-  const [theme, setTheme] = useState('light');
+  /**
+   * Root SPA managing simple views without a router:
+   * - "list": devices list
+   * - "create": create device
+   * - "edit": edit device by id
+   */
+  const [theme, setTheme] = useState("light");
+  const [view, setView] = useState("list");
+  const [editId, setEditId] = useState(null);
 
-  // Effect to apply theme to document element
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 
   // PUBLIC_INTERFACE
   const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
+
+  function goList() {
+    setView("list");
+    setEditId(null);
+  }
+  function goCreate() {
+    setView("create");
+    setEditId(null);
+  }
+  function goEdit(id) {
+    setEditId(Number(id));
+    setView("edit");
+  }
 
   return (
     <div className="App">
-      <header className="App-header">
-        <button 
-          className="theme-toggle" 
-          onClick={toggleTheme}
-          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-        >
-          {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
-        </button>
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>
-          Current theme: <strong>{theme}</strong>
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button
+        className="theme-toggle"
+        onClick={toggleTheme}
+        aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+      >
+        {theme === "light" ? "🌙 Dark" : "☀️ Light"}
+      </button>
+      <Header
+        currentView={view === "list" ? "list" : view === "create" ? "create" : "edit"}
+        onNavigate={(v) => {
+          if (v === "list") goList();
+          if (v === "create") goCreate();
+        }}
+      />
+      <main role="main" aria-live="polite">
+        {view === "list" && (
+          <DeviceList onCreate={goCreate} onEdit={goEdit} />
+        )}
+        {view === "create" && (
+          <DeviceForm
+            onCancel={goList}
+            onSaved={goList}
+          />
+        )}
+        {view === "edit" && (
+          <DeviceForm
+            deviceId={editId}
+            onCancel={goList}
+            onSaved={goList}
+          />
+        )}
+      </main>
     </div>
   );
 }

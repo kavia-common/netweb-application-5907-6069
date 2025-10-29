@@ -1,0 +1,27 @@
+.nw-form {
+  display: grid;
+  gap: 12px;
+  max-width: 640px;
+}
+
+.nw-form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nw-error {
+  color: #b5202e;
+  font-size: 0.9rem;
+}
+
+.nw-input.invalid {
+  border-color: #dc3545;
+  background: #fff5f6;
+}
+
+.nw-form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}

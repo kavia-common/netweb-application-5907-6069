@@ -1,82 +1,81 @@
-# Lightweight React Template for KAVIA
+# NetWeb React Frontend
 
-This project provides a minimal React template with a clean, modern UI and minimal dependencies.
+A lightweight React SPA for managing network devices. Implements list, create, edit, and delete features with validation and an accessible, responsive UI.
 
 ## Features
 
-- **Lightweight**: No heavy UI frameworks - uses only vanilla CSS and React
-- **Modern UI**: Clean, responsive design with KAVIA brand styling
-- **Fast**: Minimal dependencies for quick loading times
-- **Simple**: Easy to understand and modify
+- Device list with server-side sort and filter (query params)
+- Create and edit forms with client-side validation (including IPv4)
+- Delete with confirmation prompt
+- Accessible (labels, aria-attributes) and keyboard friendly
+- Light-themed, responsive UI
+- Environment-based API base URL configuration
+- Error handling and user-friendly messages
+
+## Requirements
+
+- Node.js (LTS recommended) and npm
+- A running Flask backend that implements the OpenAPI endpoints:
+  - GET /devices
+  - POST /devices
+  - GET /devices/{id}
+  - PUT /devices/{id}
+  - DELETE /devices/{id}
+
+## Environment Variables
+
+Copy `.env.example` to `.env` and set the backend base URL:
+
+```
+cp .env.example .env
+```
+
+Then edit `.env`:
+
+```
+REACT_APP_API_BASE_URL=http://localhost:5000/api
+```
+
+Note: Do not include a trailing slash.
 
 ## Getting Started
 
-In the project directory, you can run:
+Install dependencies and start the dev server:
 
-### `npm start`
-
-Runs the app in development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-### `npm test`
-
-Launches the test runner in interactive watch mode.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-## Customization
-
-### Colors
-
-The main brand colors are defined as CSS variables in `src/App.css`:
-
-```css
-:root {
-  --kavia-orange: #E87A41;
-  --kavia-dark: #1A1A1A;
-  --text-color: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --border-color: rgba(255, 255, 255, 0.1);
-}
+```
+npm install
+npm start
 ```
 
-### Components
+- App will run at http://localhost:3000
+- The frontend reads `REACT_APP_API_BASE_URL` during build/startup to route API calls.
 
-This template uses pure HTML/CSS components instead of a UI framework. You can find component styles in `src/App.css`. 
+### Tests
 
-Common components include:
-- Buttons (`.btn`, `.btn-large`)
-- Container (`.container`)
-- Navigation (`.navbar`)
-- Typography (`.title`, `.subtitle`, `.description`)
+```
+npm test
+```
 
-## Learn More
+### Build
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+npm run build
+```
 
-### Code Splitting
+## Usage
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- Devices page lists devices and supports filtering/sorting.
+- Add Device navigates to the creation form.
+- Edit opens the edit form with preloaded values.
+- Delete prompts for confirmation before removing a device.
 
-### Analyzing the Bundle Size
+## Accessibility
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- Proper labels and aria attributes
+- Focusable table rows and buttons
+- High-contrast colors for readability
 
-### Making a Progressive Web App
+## Notes
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- The app avoids router dependency by using a minimal internal view state; it remains a single-page application.
+- Ensure your backend CORS policy allows requests from http://localhost:3000 when developing locally.
