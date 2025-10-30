@@ -22,7 +22,9 @@ export function validateDevice({ name, ip_address, device_type, location }) {
    * Validate device fields and return an errors object keyed by field.
    */
   const errors = {};
-  if (!name || !String(name).trim()) errors.name = "Name is required.";
+  if (!name || !String(name).trim()) {
+    errors.name = "Name is required and must be unique.";
+  }
   if (!ip_address || !String(ip_address).trim()) {
     errors.ip_address = "IP address is required.";
   } else if (!isIPv4(ip_address)) {

@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { apiGet, apiPost, apiPut } from "../apiClient";
 import { validateDevice } from "../utils/validators";
+import { devicePathByName } from "../utils/path";
 import "./form.css";
 
 /**
  * PUBLIC_INTERFACE
  * DeviceForm can create or edit a device.
- * - If deviceId is provided, it will fetch current values via GET /devices/{id}.
+ * - If deviceName is provided, it will fetch current values via GET /devices/{name}.
  * - On submit, it will POST (create) or PUT (update).
  */
-export default function DeviceForm({ deviceId, onCancel, onSaved }) {
-  const isEdit = typeof deviceId === "number" || typeof deviceId === "string";
-  const parsedId = isEdit ? Number(deviceId) : null;
+export default function DeviceForm({ deviceName, onCancel, onSaved }) {
+  const isEdit = typeof deviceName === "string" && String(deviceName).trim().length > 0;
 
   const [values, setValues] = useState({
     name: "",
@@ -31,7 +31,7 @@ export default function DeviceForm({ deviceId, onCancel, onSaved }) {
       setLoading(true);
       setErrorMsg("");
       try {
-        const data = await apiGet(`/devices/${parsedId}`);
+        const data = await apiGet(devicePathByName(deviceName));
         if (!ignore) {
           setValues({
             name: data.name ?? "",
@@ -48,7 +48,7 @@ export default function DeviceForm({ deviceId, onCancel, onSaved }) {
     }
     load();
     return () => { ignore = true; };
-  }, [isEdit, parsedId]);
+  }, [isEdit, deviceName]);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -65,7 +65,7 @@ export default function DeviceForm({ deviceId, onCancel, onSaved }) {
     setSaving(true);
     try {
       if (isEdit) {
-        await apiPut(`/devices/${parsedId}`, values);
+        await apiPut(devicePathByName(deviceName), values);
       } else {
         await apiPost("/devices", values);
       }
@@ -104,6 +104,9 @@ export default function DeviceForm({ deviceId, onCancel, onSaved }) {
                 {errors.name}
               </div>
             )}
+            <p className="nw-label" style={{ marginTop: 0, fontSize: "0.85rem", color: "#555" }}>
+              Note: Name must be unique and non-empty. Special characters are allowed.
+            </p>
           </div>
 
           <div className="nw-form-row">

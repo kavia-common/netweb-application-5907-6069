@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { apiGet, apiDelete } from "../apiClient";
+import { devicePathByName } from "../utils/path";
 import "./list.css";
 
 // PUBLIC_INTERFACE
@@ -34,11 +35,11 @@ export default function DeviceList({ onCreate, onEdit }) {
 
   const hasData = useMemo(() => devices && devices.length > 0, [devices]);
 
-  async function handleDelete(id) {
+  async function handleDelete(name) {
     const confirmed = window.confirm("Are you sure you want to delete this device?");
     if (!confirmed) return;
     try {
-      await apiDelete(`/devices/${id}`);
+      await apiDelete(devicePathByName(name));
       await load();
     } catch (err) {
       setErrorMsg(err.message || "Failed to delete device.");
@@ -103,7 +104,6 @@ export default function DeviceList({ onCreate, onEdit }) {
           <table className="nw-table">
             <thead>
               <tr>
-                <th scope="col">ID</th>
                 <th scope="col">Name</th>
                 <th scope="col">IP Address</th>
                 <th scope="col">Type</th>
@@ -113,8 +113,7 @@ export default function DeviceList({ onCreate, onEdit }) {
             </thead>
             <tbody>
               {devices.map((d) => (
-                <tr key={d.id} tabIndex={0}>
-                  <td>{d.id}</td>
+                <tr key={d.name || d.id} tabIndex={0}>
                   <td>{d.name}</td>
                   <td>{d.ip_address}</td>
                   <td>{d.device_type}</td>
@@ -123,14 +122,14 @@ export default function DeviceList({ onCreate, onEdit }) {
                     <div className="nw-row-actions">
                       <button
                         className="nw-btn-secondary"
-                        onClick={() => onEdit(d.id)}
+                        onClick={() => onEdit(d.name)}
                         aria-label={`Edit device ${d.name}`}
                       >
                         Edit
                       </button>
                       <button
                         className="nw-btn-danger"
-                        onClick={() => handleDelete(d.id)}
+                        onClick={() => handleDelete(d.name)}
                         aria-label={`Delete device ${d.name}`}
                       >
                         Delete

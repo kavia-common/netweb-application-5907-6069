@@ -14,7 +14,7 @@ function App() {
    */
   const [theme, setTheme] = useState("light");
   const [view, setView] = useState("list");
-  const [editId, setEditId] = useState(null);
+  const [editName, setEditName] = useState(null);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -27,14 +27,14 @@ function App() {
 
   function goList() {
     setView("list");
-    setEditId(null);
+    setEditName(null);
   }
   function goCreate() {
     setView("create");
-    setEditId(null);
+    setEditName(null);
   }
-  function goEdit(id) {
-    setEditId(Number(id));
+  function goEdit(name) {
+    setEditName(String(name));
     setView("edit");
   }
 
@@ -66,7 +66,7 @@ function App() {
         )}
         {view === "edit" && (
           <DeviceForm
-            deviceId={editId}
+            deviceName={editName}
             onCancel={goList}
             onSaved={goList}
           />
